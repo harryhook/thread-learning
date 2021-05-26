@@ -15,18 +15,16 @@ public class ProducerDemo1 {
         List container = new ArrayList();
 
 
-        for (int i = 1; i < 4; i++) {
             Thread thread1 = new Thread(new Producer(container));
-            thread1.setName("生产者线程_" + i);
+            thread1.setName("生产者线程_" );
 
 
             Thread thread2 = new Thread(new Consumer(container));
-            thread2.setName("...消费者线程_" + i);
+            thread2.setName("...消费者线程_" );
 
             thread1.start();
             thread2.start();
 
-        }
     }
 }
 
@@ -44,7 +42,7 @@ class Producer implements Runnable {
             Random random = new Random();
 
             synchronized (container) {
-                if (container.size() > 0) {
+                while (container.size() > 0) {
                     try {
                         Thread.sleep(100);
                         container.wait();
@@ -57,7 +55,7 @@ class Producer implements Runnable {
                 System.out.println(Thread.currentThread().getName() + "  " + container.get(0));
 
 
-                container.notify();
+                container.notifyAll();
             }
         }
     }
@@ -74,7 +72,7 @@ class Consumer implements Runnable {
 
         while (true) {
             synchronized (container) {
-                if (container.size() < 1) {
+                while (container.size() < 1) {
                     try {
                         Thread.sleep(100);
                         container.wait();
@@ -85,7 +83,7 @@ class Consumer implements Runnable {
 
                 System.out.println(Thread.currentThread().getName() + " " + container.remove(0));
 
-                container.notify();
+                container.notifyAll();
             }
         }
     }
