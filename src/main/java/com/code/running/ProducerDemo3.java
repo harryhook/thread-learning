@@ -21,32 +21,38 @@ class Buffer {
     private int size = 10;
 
     public synchronized void put() {
-        while (count == size) {
-            try {
-                System.out.println("[put thread] " + Thread.currentThread().getName() + " is waiting");
-                this.wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        while (true) {
+            if (count == size) {
+                try {
+                    System.out.println("[put thread] " + Thread.currentThread().getName() + " is waiting");
+                    this.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
             count++;
 
             System.out.println("[put thread] " + Thread.currentThread().getName() + " add 1, count is: " + count);
             this.notifyAll();
+
         }
     }
 
     public synchronized void take() {
-        while (count == 0) {
-            try {
-                System.out.println("[take thread] " + Thread.currentThread().getName() + " is waiting");
-                this.wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        while (true) {
+            if (count == 0) {
+                try {
+                    System.out.println("[take thread] " + Thread.currentThread().getName() + " is waiting");
+                    this.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
             count--;
 
             System.out.println("[take thread] " + Thread.currentThread().getName() + " remove 1, count is: " + count);
             this.notifyAll();
+
         }
     }
 }
